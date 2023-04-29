@@ -36,13 +36,18 @@
             node_type: master
           node5:
             name: node-5
-            ip: "{{ hostvars.worker.private_ip }}"
+            ip: "{{ hostvars.worker1.private_ip }}"
             role: wazuh
             node_type: worker
           node6:
             name: node-6
             ip: "{{ hostvars.dashboard.private_ip }}"
             role: dashboard
+          node7:
+            name: node-7
+            ip: "{{ hostvars.worker2.private_ip }}"
+            role: wazuh
+            node_type: worker
       tags:
         - generate-certs
 
@@ -84,14 +89,18 @@
             node_type: master
           node5:
             name: node-5
-            ip: "{{ hostvars.worker.private_ip }}"
+            ip: "{{ hostvars.worker1.private_ip }}"
             role: wazuh
             node_type: worker
           node6:
             name: node-6
             ip: "{{ hostvars.dashboard.private_ip }}"
             role: dashboard
-
+          node7:
+            name: node-7
+            ip: "{{ hostvars.worker2.private_ip }}"
+            role: wazuh
+            node_type: worker
 # Wazuh cluster
     - hosts: manager
       roles:
@@ -125,7 +134,7 @@
                 - "{{ hostvars.wi2.private_ip }}"
                 - "{{ hostvars.wi3.private_ip }}"
 
-    - hosts: worker
+    - hosts: worker1
       roles:
         - role: "../roles/wazuh/ansible-wazuh-manager"
         - role: "../roles/wazuh/ansible-filebeat-oss"
@@ -148,6 +157,7 @@
               key: 'c98b62a9b6169ac5f67dae55ae4a9088'
               nodes:
                   - "{{ hostvars.manager.private_ip }}"
+                  - "{{ hostvars.worker2.private_ip }}"
               hidden: 'no'
         filebeat_output_indexer_hosts:
                 - "{{ hostvars.wi1.private_ip }}"
@@ -202,11 +212,40 @@
             node_type: master
           node5:
             name: node-5
-            ip: "{{ hostvars.worker.private_ip }}"
+            ip: "{{ hostvars.worker1.private_ip }}"
             role: wazuh
             node_type: worker
           node6:
             name: node-6
             ip: "{{ hostvars.dashboard.private_ip }}"
             role: dashboard
+          node7:
+            name: node-7
+            ip: "{{ hostvars.worker2.private_ip }}"
+            role: wazuh
+            node_type: worker
         ansible_shell_allow_world_readable_temp: true
+
+    - hosts: worker2
+      roles:
+        - role: "../roles/wazuh/ansible-wazuh-manager"
+      become: yes
+      become_user: root
+      vars:
+        wazuh_manager_config:
+          connection:
+              - type: 'secure'
+                port: '1514'
+                protocol: 'tcp'
+                queue_size: 131072
+          api:
+              https: 'yes'
+          cluster:
+              disable: 'no'
+              node_name: 'worker_02'
+              node_type: 'worker'
+              key: 'c98b62a9b6169ac5f67dae55ae4a9088'
+              nodes:
+                  - "{{ hostvars.manager.private_ip }}"
+                  - "{{ hostvars.worker1.private_ip }}"
+              hidden: 'no'
