@@ -139,6 +139,7 @@
       roles:
         - role: "../roles/wazuh/ansible-wazuh-manager"
         - role: "../roles/wazuh/ansible-filebeat-oss"
+        - role: "../roles/wazuh/firewall"
           filebeat_node_name: node-5
       become: yes
       become_user: root
@@ -230,6 +231,7 @@
     - hosts: worker2
       roles:
         - role: "../roles/wazuh/ansible-wazuh-manager"
+        - role: "../roles/wazuh/firewall"
       become: yes
       become_user: root
       vars:
