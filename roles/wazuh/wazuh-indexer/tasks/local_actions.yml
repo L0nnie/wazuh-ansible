@@ -30,14 +30,14 @@
 
   - name: Local action | Prepare the certificates generation template file
     template:
-      src: "wazuh-config.yml.j2"
+      src: "templates/config.yml.j2"
       dest: "{{ local_certs_path }}/wazuh-config.yml"
       mode: 0644
     register: tlsconfig_template
 
   - name: Local action | Generate the node & admin certificates in local
-    command: >-
-      bash {{ local_certs_path }}/wazuh-certs-tool.sh -A
+    command: >
+      - bash {{ local_certs_path }}/wazuh-certs-tool.sh -A
 
   run_once: true
   delegate_to: localhost
