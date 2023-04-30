@@ -106,6 +106,7 @@
       roles:
         - role: "../roles/wazuh/ansible-wazuh-manager"
         - role: "../roles/wazuh/ansible-filebeat-oss"
+        - role: "../roles/wazuh/firewall"
           filebeat_node_name: node-4
       become: yes
       become_user: root
