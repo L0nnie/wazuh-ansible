@@ -1,0 +1,18 @@
+---
+- name: Open FW ports for Wazuh 1514-collection service, 1515-Agent Enrollment, 1516-Wazuh Cluster Daemon
+  ansible.posix.firewalld:
+    port: 1514-1516/tcp
+    permanent: true
+    state: enabled
+
+- name: Open FW ports for Wazuh server RESTful API
+  ansible.posix.firewalld:
+    port: 55000/tcp
+    permanent: true
+    state: enabled
+
+- name: Permit syslog service traffic in default zone
+  ansible.posix.firewalld:
+    service: syslog
+    permanent: true
+    state: enabled
